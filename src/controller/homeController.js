@@ -1,7 +1,11 @@
 import userService from "../service/userService";
 
-const handleUserPage = (req, res) => {
-    res.render('user');
+
+
+const handleUserPage = async (req, res) => {
+
+    let userList = await userService.getUserList();
+    res.render('user', {userList});
 };
 
 const handleCreateNewUser = (req, res) => {
@@ -11,13 +15,20 @@ const handleCreateNewUser = (req, res) => {
     let password = req.body.password;
 
     userService.createNewUser(email, username, password);
-
-    return res.send('handleCreateNewUser');
+    return res.redirect('/user');
     
+};
+
+const deleteUser = async (req, res) => {
+
+    let id = req.params.id;
+    await userService.deleteUser(id);
+    return res.redirect('/user');
     
 };
 
 module.exports = {
     handleUserPage,
-    handleCreateNewUser
+    handleCreateNewUser,
+    deleteUser
 }
