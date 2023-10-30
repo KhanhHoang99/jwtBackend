@@ -8,13 +8,13 @@ const handleUserPage = async (req, res) => {
     res.render('user', {userList});
 };
 
-const handleCreateNewUser = (req, res) => {
+const handleCreateNewUser = async (req, res) => {
 
     let email = req.body.email;
     let username = req.body.username;
     let password = req.body.password;
 
-    userService.createNewUser(email, username, password);
+    await userService.createNewUser(email, username, password);
     return res.redirect('/user');
     
 };
