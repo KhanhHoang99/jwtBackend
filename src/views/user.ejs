@@ -48,7 +48,9 @@
                   <form style="display: inline;" action="/delete-user/<%= data.id%>" method="post">
                     <button type="submit" class="btn btn-danger">Delete</button>
                   </form>
-                  <button type="button" class="btn btn-primary">Edit</button>
+                  <form style="display: inline;" action="/update-user/<%= data.id%>"  method="post">
+                    <button type="submit" class="btn btn-primary">Edit</button>
+                  </form>
                 </td>
               </tr>
             <% }); %>
