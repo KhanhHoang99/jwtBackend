@@ -73,6 +73,7 @@ const deleteUser = async (id) => {
 const getUserById = async (id) => {
     
     try {
+
         // Find the user by ID
         const user = await db.User.findByPk(id);
 
@@ -91,7 +92,6 @@ const getUserById = async (id) => {
     
 }
 
-
 const updateUserInfo  = async (userId, newEmail, newUsername) => {
     
     
@@ -99,7 +99,7 @@ const updateUserInfo  = async (userId, newEmail, newUsername) => {
         // Find the user by ID
         const user = await db.User.findByPk(userId);
 
-        // If user not found, handle the scenario (throw an error or return a message)
+        // If user not found
         if (!user) {
             throw new Error('User not found');
         }
