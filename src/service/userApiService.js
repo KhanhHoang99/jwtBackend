@@ -50,7 +50,7 @@ const createNewUser = async (userData) => {
     if(isEmailExist) {
         return {
             message: "Email is already exist", //Error message
-            errorCode: '1', // Error code
+            errorCode: 1, // Error code
         }
     }
 
@@ -58,7 +58,7 @@ const createNewUser = async (userData) => {
     if(isPhoneExist) {
         return {
             message: "phone is already exist", //Error message
-            errorCode: '1', // Error code
+            errorCode: 1, // Error code
         };
     }
 
@@ -78,20 +78,74 @@ const createNewUser = async (userData) => {
 
         return {
             message: "User created successfully", //Error message
-            errorCode: '0', // Error code
+            errorCode: 0, // Error code
         }
     } catch (error) {
 
         console.error('Error creating user:', error);
         return {
             message: "Error from server maybe database", //Error message
-            errorCode: '-2', // Error code
+            errorCode: -2, // Error code
         }
     }
 
 
 }
 
+
+const checkPassword = (inputPassword, hashPassword) => {
+    return bcrypt.compareSync(inputPassword, hashPassword); 
+}
+
+
+const handleUserLogin = async (userData) => {
+
+    try {
+        let user = await db.User.findOne({
+            where: {
+                email: userData.email
+            },
+            attributes: ['username', 'sex', 'password'] 
+        });
+
+        if (user) {
+
+            const isPasswordValid = checkPassword(userData.password, user.password);
+
+            if (isPasswordValid) {
+                return { 
+                    errorCode: 0, 
+                    message: 'Login successful', 
+                    data: user 
+                };
+            } else {
+                return { 
+                    errorCode: 1,  
+                    message: 'Invalid password',
+                    data: '' 
+                };
+            }
+        } else {
+
+            console.log("Not found user with email");
+            
+            return { 
+                errorCode: 1, 
+                message: 'User not found',
+                data: ''
+            };
+        }
+    } catch (error) {
+        console.error('Error occurred during user login:', error);
+        return { success: false, message: 'An error occurred during login' };
+    }
+
+   
+}
+
+
+
 module.exports = {
-    createNewUser
+    createNewUser,
+    handleUserLogin
 }
