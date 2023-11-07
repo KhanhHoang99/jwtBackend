@@ -8,7 +8,7 @@ const readFunc = async (req, res) => {
         if(req.query.page && req.query.limit){
             let page = req.query.page;
             let limit = req.query.limit;
-            
+
             // console.log(">>> check data: ", "page = ", page, "limit = ", limit);
 
             let data = await userApiService.getAllUserWithPagination(+page, +limit);
@@ -40,12 +40,14 @@ const readFunc = async (req, res) => {
 }
 
 const createFunc = async (req, res) => {
+
     try {
-        let email = req.body.email;
-        let username = req.body.username;
-        let password = req.body.password;
-    
-        await userApiService.createNewUser(email, username, password);
+
+        let data = await userApiService.createNewUser(req.body);
+        return res.status(200).json({
+            message: data.message, //Error message
+            errorCode: data.errorCode, // Error code
+        });
 
     } catch (error) {
         console.log("error: ", error)
@@ -72,7 +74,16 @@ const updateFunc = async (req, res) => {
 const deleteFunc = async (req, res) => {
     try {
 
-        
+        if(req.query.id){
+
+            let userId = req.query.id
+            let data = await userApiService.deleteUser(userId);
+            return res.status(200).json({
+                message: data.message, //Error message
+                errorCode: data.errorCode, // Error code
+            });
+        }
+      
 
     } catch (error) {
         console.log("error: ", error)

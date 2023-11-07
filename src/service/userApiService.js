@@ -46,21 +46,21 @@ const createNewUser = async (userData) => {
 
     // check email/phone number are exist
 
-    let isEmailExist = await checkEmailExist(userData.email);
-    if(isEmailExist) {
-        return {
-            message: "Email is already exist", //Error message
-            errorCode: 1, // Error code
-        }
-    }
+    // let isEmailExist = await checkEmailExist(userData.email);
+    // if(isEmailExist) {
+    //     return {
+    //         message: "Email is already exist", //Error message
+    //         errorCode: 1, // Error code
+    //     }
+    // }
 
-    let isPhoneExist = await checkPhoneExist(userData.phone);
-    if(isPhoneExist) {
-        return {
-            message: "phone is already exist", //Error message
-            errorCode: 1, // Error code
-        };
-    }
+    // let isPhoneExist = await checkPhoneExist(userData.phone);
+    // if(isPhoneExist) {
+    //     return {
+    //         message: "phone is already exist", //Error message
+    //         errorCode: 1, // Error code
+    //     };
+    // }
 
     // hash user password
     let hashPass = hashPassword(userData.password);
@@ -72,6 +72,9 @@ const createNewUser = async (userData) => {
             username: userData.userName,
             phone: userData.phone,
             password: hashPass,
+            address: userData.address,
+            sex: userData.sex,
+            groupId: +userData.group
         });
         
         console.log('User created successfully:');
@@ -250,17 +253,29 @@ const deleteUser = async (id) => {
          // Find the user by ID
          const user = await db.User.findByPk(id);
 
-         // If user not found, handle the scenario (throw an error or return a message)
          if (!user) {
-             throw new Error('User not found');
+             return {
+                message: "User not exit",
+                errorCode: 2,
+            }; 
+         }else {
+             // Delete the user
+             await user.destroy();
+             console.log('User deleted successfully');
+             return {
+                message: "Delete User successfully!!",
+                errorCode: 0,
+            }; 
          }
  
-         // Delete the user
-         await user.destroy();
-         console.log('User deleted successfully');
 
     } catch (error) {
+
         console.log("Error when delete user: ", error);
+        return {
+            message: "Error when delete user!!",
+            errorCode: 1,
+        }; 
     }
 
 }
@@ -270,5 +285,6 @@ module.exports = {
     createNewUser,
     handleUserLogin,
     getAllUser,
+    deleteUser,
     getAllUserWithPagination
 }
