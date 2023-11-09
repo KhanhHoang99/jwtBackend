@@ -191,7 +191,8 @@ const getAllUserWithPagination = async (page, limit) => {
             offset: offset,
             limit: limit,
             attributes: ['id', 'username', 'email', 'sex', 'address', 'phone', 'groupId'], // Include only the desired fields, excluding 'password',
-            include: {model: db.Group, attributes: ["name", "description"]}
+            include: {model: db.Group, attributes: ["name", "description", "id"]},
+            order: [['id', 'DESC']]
         });
 
         let totalPages = Math.ceil(count/limit);
@@ -221,28 +222,44 @@ const getAllUserWithPagination = async (page, limit) => {
 }
 
 
-const updateUserInfo  = async (userId, newEmail, newUsername) => {
-    
+const updateUserInfo  = async (userData) => {
+
+    console.log('userdata: ', userData);
     
     try {
         // Find the user by ID
-        const user = await db.User.findByPk(userId);
+        const user = await db.User.findByPk(userData.userId);
 
         // If user not found
         if (!user) {
-            throw new Error('User not found');
+            return {
+               message: "User not exit",
+               errorCode: 2,
+           }; 
+        }else {
+
+            // Update the user with new data
+            user.username = userData.username;
+            user.phone = userData.phone;
+            user.address = userData.address;
+            user.sex = userData.sex;
+            user.groupId = userData.group;
+
+            await user.save(); // Save the updated user to the database
+            console.log('Update user successfully');
+            
+            return {
+               message: "Update User successfully!!",
+               errorCode: 0,
+           }; 
         }
-
-        // Update the user with new data
-        user.email = newEmail;
-        user.username = newUsername;
-        await user.save(); // Save the updated user to the database
-
-        console.log('Update user success!')
-        
+     
     } catch (error) {
-        console.error('Error updating user by ID:', error);
-        throw error; // Throw the error to be handled by the caller
+        console.error('Error Update user by ID:', error);
+        return {
+            message: "Error when update user!!",
+            errorCode: 1,
+        }; 
     }
 
 }
@@ -286,5 +303,6 @@ module.exports = {
     handleUserLogin,
     getAllUser,
     deleteUser,
-    getAllUserWithPagination
+    getAllUserWithPagination,
+    updateUserInfo
 }

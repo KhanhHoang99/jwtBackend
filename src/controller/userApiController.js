@@ -59,8 +59,14 @@ const createFunc = async (req, res) => {
 }
 
 const updateFunc = async (req, res) => {
-    try {
+    console.log('userdata: ', req.body);
 
+    try {
+        let data = await userApiService.updateUserInfo(req.body);
+        return res.status(200).json({
+            message: data.message, //Error message
+            errorCode: data.errorCode, // Error code
+        });
         
     } catch (error) {
         console.log("error: ", error)
