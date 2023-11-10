@@ -5,6 +5,8 @@ import initApiRoutes from "./routes/api";
 import configCors from "./config/cors";
 import bodyParser from "body-parser";
 
+import JWTAction from "./middleware/JWTAction";
+
 
 require("dotenv").config();
 
@@ -17,6 +19,12 @@ configCors(app);
 // config body-parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true }));
+
+let token = JWTAction.createJWT()
+console.log('token: ', token);
+
+let data = JWTAction.verifyToken(token);
+console.log('data: ', data);
 
 
 //config view engine
