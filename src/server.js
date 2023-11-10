@@ -4,8 +4,7 @@ import initWebRoutes from "./routes/web";
 import initApiRoutes from "./routes/api";
 import configCors from "./config/cors";
 import bodyParser from "body-parser";
-
-import JWTAction from "./middleware/JWTAction";
+import cookieParser from 'cookie-parser';
 
 
 require("dotenv").config();
@@ -20,6 +19,8 @@ configCors(app);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true }));
 
+// config cookie-parser
+app.use(cookieParser())
 
 //config view engine
 configViewEngine(app);

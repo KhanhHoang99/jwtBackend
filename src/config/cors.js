@@ -7,7 +7,8 @@ const configCors = (app) => {
 
     let corsOptions = {
         origin: process.env.REACTURL,
-        optionsSuccessStatus: 200
+        optionsSuccessStatus: 200,
+        credentials: true,
     }
 
 

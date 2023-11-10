@@ -108,6 +108,7 @@ const checkPassword = (inputPassword, hashPassword) => {
 const handleUserLogin = async (userData) => {
 
     try {
+        
         let user = await db.User.findOne({
             where: {
                 email: userData.email

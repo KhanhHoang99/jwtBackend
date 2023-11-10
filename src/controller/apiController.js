@@ -48,6 +48,11 @@ const handleLogin = async (req, res) => {
 
         let data = await userApiService.handleUserLogin(req.body);
 
+        if(data.errorCode == 0){
+            let cookie = data.data.access_token;   
+            res.cookie('jwt', cookie, {httpOnly: true});
+        }
+
         return res.status(200).json({
             message: data.message, //Error message
             errorCode: data.errorCode, // Error code
