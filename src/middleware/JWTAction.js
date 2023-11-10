@@ -4,13 +4,8 @@ require("dotenv").config();
 
 const secretKey =  process.env.JWT_SECRET; 
 
-const createJWT = () => {
+const createJWT = (payload) => {
 
-    const payload = {
-        userId: 123,
-        username: 'Khanh hihihi'
-    };
-    
     let token = null;
 
     try {

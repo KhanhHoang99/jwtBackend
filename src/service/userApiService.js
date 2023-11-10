@@ -1,6 +1,10 @@
 
 import bcrypt from "bcryptjs";
 import db from "../models"
+import JWTService from "../service/JWTService";
+import JWTAction from "../middleware/JWTAction";
+require("dotenv").config();
+
 
 const bluebird = require('bluebird');
 
@@ -74,7 +78,7 @@ const createNewUser = async (userData) => {
             password: hashPass,
             address: userData.address,
             sex: userData.sex,
-            groupId: +userData.group
+            groupId: 6
         });
         
         console.log('User created successfully:');
@@ -108,7 +112,7 @@ const handleUserLogin = async (userData) => {
             where: {
                 email: userData.email
             },
-            attributes: ['username', 'sex', 'password'] 
+            attributes: ['username', 'sex', 'password', 'groupId'] 
         });
 
         if (user) {
@@ -116,10 +120,26 @@ const handleUserLogin = async (userData) => {
             const isPasswordValid = checkPassword(userData.password, user.password);
 
             if (isPasswordValid) {
+
+                // let token = 
+
+                let groupWithRoles = await JWTService.getGroupWithRoles(user);
+
+                let payload = {
+                    email: userData.email,
+                    groupWithRoles,
+                    expiresIn: process.env.JWT_EXPIRESIN
+                }
+
+                let token = JWTAction.createJWT(payload)
+
                 return { 
                     errorCode: 0, 
                     message: 'Login successful', 
-                    data: user 
+                    data: {
+                        access_token: token,
+                        data: groupWithRoles
+                    }
                 };
             } else {
                 return { 
