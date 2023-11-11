@@ -14,6 +14,7 @@ const configCors = (app) => {
 
 
     app.use(cors(corsOptions));
+    
 }
 
 export default configCors;

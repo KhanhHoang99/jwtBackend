@@ -5,7 +5,8 @@ const readFunc = async (req, res) => {
 
     try {
 
-        console.log('cookie: ', req.cookies)
+        console.log('req: ', req.user);
+
 
         if(req.query.page && req.query.limit){
             let page = req.query.page;

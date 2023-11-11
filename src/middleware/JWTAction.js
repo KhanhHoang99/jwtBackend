@@ -26,7 +26,7 @@ const verifyToken = (token) => {
           console.error('Token verification failed:', err.message);
         } else {
           // Token is valid, decoded contains the decoded payload
-          console.log('Decoded token payload:', decoded);
+        //   console.log('Decoded token payload:', decoded);
           data = decoded;
         }
     });
@@ -34,7 +34,64 @@ const verifyToken = (token) => {
     return data;
 }
 
+const checkUserJWT = (req, res, next) => {
+    
+    let cookies = req.cookies;
+
+    if(cookies && cookies.jwt){
+        let token = cookies.jwt
+        let decoded = verifyToken(token);
+
+        if(decoded) {
+            req.user = decoded;
+            next()
+        }else{
+            return res.status(401).json({
+                message: "Not authenticated the user", //Error message
+                errorCode: -1, // Error code
+            });
+        }
+    }else{
+        console.log('khong co cookies ')
+        return res.status(401).json({
+            message: "Not authenticated the user", //Error message
+            errorCode: -1, // Error code
+        });
+    }
+}
+
+const checkUserPermission = (req, res, next) => {
+
+    if(req.user) {
+
+        let roles = req.user.groupWithRoles.Roles;
+        let email = req.user.email;
+        let currentUrl = req.path
+
+        console.log('currentUrl: ', currentUrl)
+
+
+        if(roles || roles.length === 0) {
+            return res.status(403).json({
+                message: "you don't permission to access this resource", //Error message
+                errorCode: -1, // Error code
+            });
+        }
+        let canAccess = roles.some(item => item.url === currentUrl)
+        if(canAccess) {
+            next();
+        }else{
+            return res.status(403).json({
+                message: "you don't permission to access this resource", //Error message
+                errorCode: -1, // Error code
+            });
+        }
+    }
+}
+
 module.exports = {
     createJWT,
-    verifyToken
+    verifyToken,
+    checkUserJWT,
+    checkUserPermission
 }
