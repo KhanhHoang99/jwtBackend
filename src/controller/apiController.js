@@ -71,9 +71,7 @@ const handleLogin = async (req, res) => {
 
 
 
-
-
 module.exports = {
     handleRegister,
-    handleLogin
+    handleLogin,
 }

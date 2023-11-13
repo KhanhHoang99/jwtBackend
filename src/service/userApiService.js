@@ -113,7 +113,7 @@ const handleUserLogin = async (userData) => {
             where: {
                 email: userData.email
             },
-            attributes: ['username', 'sex', 'password', 'groupId'] 
+            attributes: ['username', 'email', 'sex', 'password', 'groupId'] 
         });
 
         if (user) {
@@ -129,17 +129,21 @@ const handleUserLogin = async (userData) => {
                 let payload = {
                     email: userData.email,
                     groupWithRoles,
+                    username: user.username,
                     expiresIn: process.env.JWT_EXPIRESIN
                 }
 
                 let token = JWTAction.createJWT(payload)
+
 
                 return { 
                     errorCode: 0, 
                     message: 'Login successful', 
                     data: {
                         access_token: token,
-                        data: groupWithRoles
+                        data: groupWithRoles,
+                        email: user.email,
+                        username: user.username
                     }
                 };
             } else {

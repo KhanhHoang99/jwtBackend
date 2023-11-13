@@ -4,6 +4,9 @@ require("dotenv").config();
 
 const secretKey =  process.env.JWT_SECRET; 
 
+const nonSecurePaths = ['/login', '/register'];
+
+
 const createJWT = (payload) => {
 
     let token = null;
@@ -36,15 +39,21 @@ const verifyToken = (token) => {
 
 const checkUserJWT = (req, res, next) => {
     
+    if(nonSecurePaths.includes(req.path)){
+        return next();
+    }
+
     let cookies = req.cookies;
 
     if(cookies && cookies.jwt){
+
         let token = cookies.jwt
         let decoded = verifyToken(token);
 
         if(decoded) {
             req.user = decoded;
-            next()
+            req.token = token;
+            next();
         }else{
             return res.status(401).json({
                 message: "Not authenticated the user", //Error message
@@ -62,22 +71,25 @@ const checkUserJWT = (req, res, next) => {
 
 const checkUserPermission = (req, res, next) => {
 
+    if(nonSecurePaths.includes(req.path) || req.path === '/account'){
+        return next();
+    }
+
     if(req.user) {
 
         let roles = req.user.groupWithRoles.Roles;
         let email = req.user.email;
         let currentUrl = req.path
-
-        console.log('currentUrl: ', currentUrl)
-
-
-        if(roles || roles.length === 0) {
+        
+        if(!roles || roles.length === 0) {
             return res.status(403).json({
                 message: "you don't permission to access this resource", //Error message
                 errorCode: -1, // Error code
             });
         }
+
         let canAccess = roles.some(item => item.url === currentUrl)
+       
         if(canAccess) {
             next();
         }else{
@@ -88,6 +100,8 @@ const checkUserPermission = (req, res, next) => {
         }
     }
 }
+
+
 
 module.exports = {
     createJWT,
