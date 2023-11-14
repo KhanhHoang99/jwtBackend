@@ -4,7 +4,7 @@ require("dotenv").config();
 
 const secretKey =  process.env.JWT_SECRET; 
 
-const nonSecurePaths = ['/login', '/register'];
+const nonSecurePaths = ['/login', '/register', '/logout'];
 
 
 const createJWT = (payload) => {
@@ -55,7 +55,7 @@ const checkUserJWT = (req, res, next) => {
 
     if((cookies && cookies.jwt) || tokenFromHeader){
 
-        let token = cookies && cookies.jwt ? cookies.jwt : tokenFromHeader
+        let token = cookies && cookies.jwt ? cookies.jwt : tokenFromHeader;
         let decoded = verifyToken(token);
 
         if(decoded) {
