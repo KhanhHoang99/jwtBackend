@@ -5,30 +5,13 @@ const readFunc = async (req, res) => {
 
     try {
 
-        console.log('req: ', req.user);
+        let data = await roleApiService.getAllRole();
 
-
-        if(req.query.page && req.query.limit){
-            let page = req.query.page;
-            let limit = req.query.limit;
-
-            // console.log(">>> check data: ", "page = ", page, "limit = ", limit);
-
-            let data = await groupApiService.getAllUserWithPagination(+page, +limit);
-
-            return res.status(200).json({
-                message: data.message, //Error message
-                errorCode: data.errorCode, // Error code
-                data: data.data
-            });
-
-        }else{
-           
-            return res.status(500).json({
-                message: "Missing parameter", //Error message
-                errorCode: -1, // Error code
-            });
-        }
+        return res.status(200).json({
+            message: data.message, //Error message
+            errorCode: data.errorCode, // Error code
+            roleList: data.roleList
+        });
 
         
 
@@ -86,7 +69,7 @@ const deleteFunc = async (req, res) => {
         if(req.query.id){
 
             let userId = req.query.id
-            let data = await userApiService.deleteUser(userId);
+            let data = await roleApiService.deleteRole(userId);
             return res.status(200).json({
                 message: data.message, //Error message
                 errorCode: data.errorCode, // Error code
