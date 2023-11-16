@@ -29,7 +29,7 @@ const initApiRoutes = (app) => {
     router.delete("/user/delete", userApiController.deleteFunc);
 
 
-    // roles routes
+    // role routes
     router.get("/role/read", roleController.readFunc);
     router.post("/role/create", roleController.createFunc);
     router.put("/role/update", roleController.updateFunc);

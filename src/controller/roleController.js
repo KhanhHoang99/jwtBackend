@@ -42,8 +42,8 @@ const readFunc = async (req, res) => {
 
 }
 
+// create role
 const createFunc = async (req, res) => {
-
     try {
 
         let data = await roleApiService.createNewRoles(req.body);

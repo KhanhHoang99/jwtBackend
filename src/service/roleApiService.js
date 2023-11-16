@@ -2,7 +2,7 @@ import db from "../models"
 
 const createNewRoles = async (roles) => {
     
-     // create a new role
+     // create a new role ...
      try {
 
 
