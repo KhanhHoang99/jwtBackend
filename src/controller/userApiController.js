@@ -5,7 +5,7 @@ const readFunc = async (req, res) => {
 
     try {
 
-        console.log('req: ', req.user);
+        // console.log('req: ', req.user);
 
 
         if(req.query.page && req.query.limit){

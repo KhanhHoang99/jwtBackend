@@ -101,4 +101,51 @@ const deleteRole = async (id) => {
 
 }
 
-module.exports = {createNewRoles, getAllRole, deleteRole}
+const getRoleByGroup = async (id) => {
+    
+    try {
+
+        if(!id) {
+            return {
+                message: "Not found any roles!",
+                errorCode: 0,
+                roleList: []
+            }
+        }
+
+        let roleList = await db.Group.findOne({
+            where: {id: id},
+            attributes: ['id', 'name', 'description'],
+            include: [{
+                model: db.Role, 
+                attributes: ['id', 'url', 'description'],
+                through: { attributes: [] }
+            }],
+             
+        })
+
+        if(roleList) {
+            return {
+                message: "Get all role successfully!!",
+                errorCode: 0,
+                roles: roleList.Roles
+            }; 
+        }else {
+            return {
+                message: "Get all role successfully!!",
+                errorCode: 0,
+                roleList: []
+            }; 
+        }
+
+    } catch (error) {
+        console.log("Error when get role: ", error);
+        return {
+            message: "Error when get role!!",
+            errorCode: 1,
+            roleList: []
+        }; 
+    }
+}
+
+module.exports = {createNewRoles, getAllRole, deleteRole, getRoleByGroup}
