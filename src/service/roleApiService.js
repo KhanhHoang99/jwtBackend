@@ -148,4 +148,30 @@ const getRoleByGroup = async (id) => {
     }
 }
 
-module.exports = {createNewRoles, getAllRole, deleteRole, getRoleByGroup}
+const assignRoleToGroup = async (data) => {
+
+    try {
+   
+        await db.Group_Role.destroy({
+            where: {groupId: +data.groupId}
+        });
+
+        await db.Group_Role.bulkCreate(data.groupRoles);
+
+        return {
+            message: "Assign Role to Group Succeeds!",
+            errorCode: 0,
+           
+        }; 
+
+    } catch (error) {
+       
+        return {
+            message: "Error when Assign Role!!",
+            errorCode: 1,
+          
+        }; 
+    }
+}
+
+module.exports = {createNewRoles, getAllRole, deleteRole, getRoleByGroup, getRoleByGroup, assignRoleToGroup}
